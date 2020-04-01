@@ -1,8 +1,28 @@
 # Cozoomus
 
-Cozoomus optimizes Zoom.us licenses management for your organization. It will assign/remove Zoom.us licenses to users in your organization depending on the scheduled meetings.
+Cozoomus optimizes the **Zoom.us** license management. It will assign/remove licenses to users in your organization depending on the scheduled meetings.
 
 In other words: do you have any meeting today? Then you will have a license.
+
+
+```
+$ python cozoomus.py
+
+###############################################
+#                 COZOOMUS                    #
+###############################################
+# Wed Apr  1 16:27:07 UTC 2020
+[user1@domain.com] Meetings scheduled. License assigned
+[user2@domain.com] Meetings scheduled. Nothing to do, already licensed
+[user3@domain.com] User whitelisted. License assigned.
+
+~ SUMMARY ~
+Users: 30
+Whitelisted users: 1
+Users with scheduled meetings: 2
+Assigned licenses: 3/5
+Available licenses: 2/5
+```
 
 ## Configuration
 
