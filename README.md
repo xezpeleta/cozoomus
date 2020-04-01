@@ -34,7 +34,7 @@ Configuration is made using environment variables:
 | ZOOM_API_SECRET        |    yes   |               | API SECRET from your JWT app. [More info](https://marketplace.zoom.us/docs/guides/getting-started/app-types/create-jwt-app) |
 | ZOOM_TIME_DELTA        |     -    | 4             | Hours before/after start time of a meeting                                                                                  |
 | ZOOM_LICENSES          |     -    | 20            | Total license number                                                                                                        |
-| ZOOM_WHITELISTED_USERS |     -    |               | Licensed users (always)                                                                                                     |
+| ZOOM_WHITELISTED_USERS |     -    |               | Licensed users (email addresses separated with whitespaces)                                                                                                     |
 
 ## How to use it
 
