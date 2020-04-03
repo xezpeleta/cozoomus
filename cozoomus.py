@@ -89,6 +89,9 @@ if __name__ == "__main__":
     users = json.loads(client.user.list().content)['users']
 
     required_licenses = 0
+    recurring_meetings = 0
+    recurring_meetings_notime = 0
+    scheduled_meetings = 0
     for user in users:
         if user['email'] in WHITELISTED_USERS:
             if user['type'] == USER_NON_LICENSED:
@@ -112,6 +115,7 @@ if __name__ == "__main__":
                 else:
                     print("[%s] Recurring meeting with no fixed time. Nothing to do, already licensed" % user['email'])
                 required_licenses += 1
+                recurring_meetings_notime += 1
                 break
             if meeting['type'] == MEETING_TYPE_RECURRING_WITH_TIME:
                 # Recurring meeting with fixed time
@@ -127,6 +131,7 @@ if __name__ == "__main__":
                             else:
                                 print("[%s] Recurring meetings scheduled. Nothings to do, already licensed" % user['email'])
                             required_licenses += 1
+                            recurring_meetings += 1
                             break
                     else:
                         continue # all occurrences are far
@@ -140,6 +145,7 @@ if __name__ == "__main__":
                     else:
                         print("[%s] Meetings scheduled. Nothing to do, already licensed" % user['email'])
                     required_licenses += 1
+                    scheduled_meetings += 1
                     break
         else:
             if user['type'] == USER_LICENSED:
@@ -153,5 +159,8 @@ if __name__ == "__main__":
     print("Users: %i" % len(users))
     print("Whitelisted users: %i" % len(WHITELISTED_USERS))
     print("Users with meetings: %i" % (required_licenses - len(WHITELISTED_USERS)))
+    print("- Recurring meetings (no fixed time): %i" % (recurring_meetings_notime))
+    print("- Recurring meetings (fixed time): %i" % (recurring_meetings))
+    print("- Scheduled or live meetings: %i" % (scheduled_meetings))
     print("Assigned licenses: %i/%i" % (required_licenses, LICENSES))
     print("Available licenses: %i/%i" % ((LICENSES - required_licenses), LICENSES))
