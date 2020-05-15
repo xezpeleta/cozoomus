@@ -86,7 +86,7 @@ if __name__ == "__main__":
     MEETING_TYPE_RECURRING_WITH_TIME = 8
     
     client = ZoomClient(API_KEY, API_SECRET)
-    users = json.loads(client.user.list().content)['users']
+    users = json.loads(client.user.list(page_size=100).content)['users']
 
     required_licenses = 0
     recurring_meetings = 0
