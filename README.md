@@ -76,7 +76,7 @@ ZOOM_API_SECRET=yyy
 Run the script with Docker:
 
 ```
-docker run --env-file .env --rm --it xezpeleta/cozoomus
+docker run --env-file .env --rm -it xezpeleta/cozoomus
 ```
 
 Or using Docker-Compose:
