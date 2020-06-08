@@ -102,7 +102,7 @@ if __name__ == "__main__":
             required_licenses += 1
             continue
         try:
-            meetings = json.loads(client.meeting.list(user_id=user['id']).content)['meetings']
+            meetings = json.loads(client.meeting.list(user_id=user['id'], page_size=100).content)['meetings']
         except:
             continue
         
