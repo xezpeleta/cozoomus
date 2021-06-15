@@ -51,7 +51,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=numeric_loglevel)
     logging.info("SETTINGS :: LOGLEVEL = {}".format(numeric_loglevel))
 
-    # Required enironment variables
+    # Required environment variables
     if "ZOOM_API_KEY" not in os.environ or "ZOOM_API_SECRET" not in os.environ:
         logging.critical("Cannot find required environment variables")
         print("[ERROR] Cannot find required environment variables:")
