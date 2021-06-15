@@ -75,6 +75,9 @@ if __name__ == "__main__":
     WHITELISTED_USERS = list(os.getenv('ZOOM_WHITELISTED_USERS', default="").strip('"').split(" "))
     logging.info("SETTINGS :: WHITELISTED_USERS = {}".format(WHITELISTED_USERS))
 
+    # Ignore recurrent meetings without time: do not assign licenses if the meeting is a recurrent meeting without time
+    IGNORE_RECURRENT_WITHOUT_TIME = int(os.getenv('IGNORE_RECURRENT_WITHOUT_TIME', default=True))
+
     # User type values (ZOOM API)
     USER_NON_LICENSED = 1
     USER_LICENSED = 2
@@ -108,14 +111,17 @@ if __name__ == "__main__":
         
         for meeting in meetings:
             if meeting['type'] == MEETING_TYPE_RECURRING_WITHOUT_TIME:
-                # Recurring meeting, with no fixed time
-                if user['type'] == USER_NON_LICENSED:
-                    user_update_type(client, user, USER_LICENSED)
-                    print("[%s] Recurring meeting with no fixed time. License assigned" % user['email'])
-                else:
-                    print("[%s] Recurring meeting with no fixed time. Nothing to do, already licensed" % user['email'])
-                required_licenses += 1
-                recurring_meetings_notime += 1
+                if not IGNORE_RECURRENT_WITHOUT_TIME:
+                    # Recurring meeting, with no fixed time
+                    if user['type'] == USER_NON_LICENSED:
+                        user_update_type(client, user, USER_LICENSED)
+                        print("[%s] Recurring meeting with no fixed time. License assigned" % user['email'])
+                    else:
+                        print("[%s] Recurring meeting with no fixed time. Nothing to do, already licensed" % user['email'])
+                    required_licenses += 1
+                    recurring_meetings_notime += 1
+                    break
+                print("[%s] Recurring meeting with no fixed time. Ignored" % user['email'])
                 break
             if meeting['type'] == MEETING_TYPE_RECURRING_WITH_TIME:
                 # Recurring meeting with fixed time
