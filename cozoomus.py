@@ -78,6 +78,9 @@ if __name__ == "__main__":
     # Ignore recurrent meetings without time: do not assign licenses if the meeting is a recurrent meeting without time
     IGNORE_RECURRENT_WITHOUT_TIME = int(os.getenv('IGNORE_RECURRENT_WITHOUT_TIME', default=True))
 
+    # Ignore recurrent meetings with time: do not assign licenses if the meeting is a recurrent meeting with time
+    IGNORE_RECURRENT_WITH_TIME = int(os.getenv('IGNORE_RECURRENT_WITH_TIME', default=False))
+
     # User type values (ZOOM API)
     USER_NON_LICENSED = 1
     USER_LICENSED = 2
@@ -128,20 +131,23 @@ if __name__ == "__main__":
                 ## We need to query for meeting occurrences
                 ## and in order to do that we load "full" meeting info
                 meeting = json.loads(client.meeting.get(id=meeting['id']).content)
-                if 'occurrences' in meeting:
-                    for occurrence in meeting['occurrences']:
-                        if is_meeting_soon(occurrence):
-                            if user['type'] == USER_NON_LICENSED:
-                                user_update_type(client, user, USER_LICENSED)
-                                print("[%s] Recurring meetings scheduled. License assigned" % user['email'])
-                            else:
-                                print("[%s] Recurring meetings scheduled. Nothings to do, already licensed" % user['email'])
-                            required_licenses += 1
-                            recurring_meetings += 1
-                            break
-                    else:
-                        continue # all occurrences are far
-                    break # there is a close occurrence
+                if not IGNORE_RECURRENT_WITH_TIME:
+                    if 'occurrences' in meeting:
+                        for occurrence in meeting['occurrences']:
+                            if is_meeting_soon(occurrence):
+                                if user['type'] == USER_NON_LICENSED:
+                                    user_update_type(client, user, USER_LICENSED)
+                                    print("[%s] Recurring meetings scheduled. License assigned" % user['email'])
+                                else:
+                                    print("[%s] Recurring meetings scheduled. Nothings to do, already licensed" % user['email'])
+                                required_licenses += 1
+                                recurring_meetings += 1
+                                break
+                        else:
+                            continue # all occurrences are far
+                        break # there is a close occurrence
+                print("[%s] Recurring meeting with fixed time. Ignored" % user['email'])
+                break
             else:
                 # Scheduled meeting or instant meeting
                 if is_meeting_soon(meeting):
