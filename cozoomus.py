@@ -4,6 +4,9 @@ import json
 from zoomus import ZoomClient
 from datetime import datetime, timezone
 
+class NotSyncedError(Exception):
+    pass
+
 def user_update_type(client, user, user_type):
     user_data = {
         "id": user['id'],
@@ -29,6 +32,11 @@ def is_meeting_soon(meeting):
         raise ValueError('Invalid meeting start_time: %s' % meeting['start_time'])
     logging.debug('is_meeting_soon({}) :: start_time = {}'.format(meeting_id, start_time))
     #print('test: {}'.format(utc_to_local(start_time).strftime("%H:%M:%S")))
+
+    wrong_years = [1980, 2099]
+    if start_time.year in wrong_years:
+        raise NotSyncedError('Meeting not properly synced from Google Calendar')
+            
     now = datetime.now()
     delta = abs(start_time - now).total_seconds() // 3600
     logging.debug('is_meeting_soon({}) :: delta = {} hours'.format(meeting_id, delta))
@@ -150,15 +158,19 @@ if __name__ == "__main__":
                 break
             else:
                 # Scheduled meeting or instant meeting
-                if is_meeting_soon(meeting):
-                    if user['type'] == USER_NON_LICENSED:
-                        user_update_type(client, user, USER_LICENSED)
-                        print("[%s] Meetings scheduled. License assigned" % user['email'])
-                    else:
-                        print("[%s] Meetings scheduled. Nothing to do, already licensed" % user['email'])
-                    required_licenses += 1
-                    scheduled_meetings += 1
-                    break
+                try:
+                    if is_meeting_soon(meeting):
+                        if user['type'] == USER_NON_LICENSED:
+                            user_update_type(client, user, USER_LICENSED)
+                            print("[%s] Meetings scheduled. License assigned" % user['email'])
+                        else:
+                            print("[%s] Meetings scheduled. Nothing to do, already licensed" % user['email'])
+                        required_licenses += 1
+                        scheduled_meetings += 1
+                        break
+                except NotSyncedError as err:
+                    print("[%s] WARNING: Meeting not synced with Google Calendar" % user['email'])
+                    #TODO: assign license if envar INCLUDE_NOT_SYNCED_MEETINGS
         else:
             if user['type'] == USER_LICENSED:
                 user_update_type(client, user, USER_NON_LICENSED)
