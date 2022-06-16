@@ -1,8 +1,6 @@
 # Cozoomus
 
-Cozoomus handles floating licenses in **Zoom.us**. It will assign/remove licenses to users in your organization depending on the scheduled meetings.
-
-In other words: do you have any meeting today? Then you will have a license.
+Cozoomus handles dynamic license assignations, depending on the scheduled meetings.
 
 
 ```
