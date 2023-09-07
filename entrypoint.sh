@@ -24,10 +24,11 @@ function header() {
     echo "# $(date)"
 }
 
-if [ -z "$ZOOM_API_KEY" ] || [ -z "$ZOOM_API_SECRET" ]; then
+if [ -z "$ZOOM_ACCOUNT_ID" ] || [ -z "$ZOOM_CLIENT_ID" ] || [ -z "$ZOOM_CLIENT_SECRET" ]; then
     echo "ERROR: required environment variables not defined"
-    echo "- ZOOM_API_KEY"
-    echo "- ZOOM_API_SECRET"
+    echo "- ZOOM_ACCOUNT_ID"
+    echo "- ZOOM_CLIENT_ID"
+    echo "- ZOOM_CLIENT_SECRET"
     exit 1
 fi
 
