@@ -60,15 +60,17 @@ if __name__ == "__main__":
     logging.info("SETTINGS :: LOGLEVEL = {}".format(numeric_loglevel))
 
     # Required environment variables
-    if "ZOOM_API_KEY" not in os.environ or "ZOOM_API_SECRET" not in os.environ:
+    if "ZOOM_ACCOUNT_ID" not in os.environ or "ZOOM_CLIENT_ID" not in os.environ or "ZOOM_CLIENT_SECRET" not in os.environ:
         logging.critical("Cannot find required environment variables")
         print("[ERROR] Cannot find required environment variables:")
-        print(" - ZOOM_API_KEY")
-        print(" - ZOOM_API_SECRET")
+        print(" - ZOOM_ACCOUNT_ID")
+        print(" - ZOOM_CLIENT_ID")
+        print(" - ZOOM_CLIENT_SECRET")
         exit()
-
-    API_KEY = os.getenv('ZOOM_API_KEY')
-    API_SECRET = os.getenv('ZOOM_API_SECRET')
+    
+    ACCOUNT_ID = os.getenv('ZOOM_ACCOUNT_ID')
+    CLIENT_ID = os.getenv('ZOOM_CLIENT_ID')
+    CLIENT_SECRET = os.getenv('ZOOM_CLIENT_SECRET')
 
     # Time delta (in hours)
     # TODO: allow using diffent deltas (TIME_DELTA_BEFORE & TIME_DELTA_AFTER)
@@ -99,7 +101,7 @@ if __name__ == "__main__":
     MEETING_TYPE_RECURRING_WITHOUT_TIME = 3
     MEETING_TYPE_RECURRING_WITH_TIME = 8
     
-    client = ZoomClient(API_KEY, API_SECRET)
+    client = ZoomClient(CLIENT_ID, CLIENT_SECRET, ACCOUNT_ID)
     users = json.loads(client.user.list(page_size=100).content)['users']
 
     required_licenses = 0
